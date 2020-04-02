@@ -37,5 +37,9 @@
     "ts-node": "^8.8.1",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
+  },
+  "nodemoonConfig": {
+    "ignore": ["data/*", "sessions/*"],
+    "delay": "2500"
   }
 }
