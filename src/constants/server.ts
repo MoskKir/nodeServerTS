@@ -3,6 +3,6 @@ export const server = {
     publicDir: process.cwd() + '/public/',
     srcDir: process.cwd() + '/src/',
     baseDir: process.cwd() + '/data/',
-}
+};
 
 export default server;
