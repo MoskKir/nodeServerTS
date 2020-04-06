@@ -1,5 +1,5 @@
 export const server = {
-    port: 3002,
+    port: 3003,
     mongoDB: 'mongodb://localhost:27017/MyDb',
     clientSrcDir: process.cwd() + '../client/src/',
     publicDir: process.cwd() + '/public/',

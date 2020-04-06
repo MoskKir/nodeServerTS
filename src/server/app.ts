@@ -42,7 +42,7 @@ class App {
     }
 
     public init() {
-        this._app.listen( this._port, () => console.log(`App listen on port: ${this._port}`) )
+        return this._app.listen( this._port, () => console.log(`App listen on port: ${this._port}`) );
     }
 
     private logErrors(err :Error, req :Request, res :Response, next :NextFunction) {
@@ -58,7 +58,7 @@ class App {
     private setMiddlewares() {
         this._app.use(cookieParser());
         this._app.use(bodyParser.text())
-        this._app.use(bodyParser.urlencoded({ extended: true }))
+        // this._app.use(bodyParser.urlencoded({ extended: true }))
         this._app.use(bodyParser.json())
         this._app.use(multer().any())
     }
@@ -76,4 +76,4 @@ class App {
 }
 
 const app = App.Instance;
-app.init()
+export default app.init();
