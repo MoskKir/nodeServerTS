@@ -2,12 +2,18 @@ import express from 'express';
 import { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import path from 'path';
+
 import fileStore from 'session-file-store';
+
+import Router from './router/router';
+
+import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+
 import multer from 'multer';
 
 import constants from './constants/server';
-import cookieParser from 'cookie-parser';
+
 
 class App {
     _port :number;
@@ -22,6 +28,8 @@ class App {
         this._app.set('views', path.join(constants.srcDir, 'views/'));
 
         this.setMiddlewares();
+
+        this._app.use('/', Router.routes);
 
         this._app.use(this.logErrors);
         this._app.use(this.errorHandler);
