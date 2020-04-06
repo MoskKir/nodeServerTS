@@ -20,6 +20,7 @@
     "@types/mongoose": "^5.7.8",
     "@types/multer": "^1.4.2",
     "@types/session-file-store": "^1.2.1",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "connect-mongo": "^3.2.0",
     "cookie-parser": "^1.4.5",
@@ -27,19 +28,26 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "lowdb": "^1.0.0",
-    "mongose": "0.0.2-security",
+    "mongodb": "^3.5.5",
+    "mongoose": "^5.9.7",
     "multer": "^1.4.2",
     "pug": "^2.0.4",
-    "session-file-store": "^1.4.0"
+    "session-file-store": "^1.4.0",
+    "ts-mongoose": "0.0.21"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "nodemon": "^2.0.2",
+    "supertest": "^4.0.2",
     "ts-node": "^8.8.1",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
   },
   "nodemoonConfig": {
-    "ignore": ["data/*", "sessions/*"],
+    "ignore": [
+      "data/*",
+      "sessions/*"
+    ],
     "delay": "2500"
   }
 }

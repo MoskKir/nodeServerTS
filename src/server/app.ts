@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import path from 'path';
 
+import mongoose from 'mongoose';
 import fileStore from 'session-file-store';
 
 import Router from './router/router';
@@ -27,14 +28,13 @@ class App {
         this._app.use(express.static(constants.publicDir));
         this._app.set('views', path.join(constants.srcDir, 'views/'));
 
+        this.connectToDB();
         this.setMiddlewares();
 
         this._app.use('/', Router.routes);
 
         this._app.use(this.logErrors);
         this._app.use(this.errorHandler);
-
-        // this._app.use(this.setSession);
     }
 
     public static get Instance() :App {
@@ -55,16 +55,23 @@ class App {
         res.send({error: err})
     }
 
-    private setSession() {
-        // const FileStore = fileStore(session);
-    }
-
     private setMiddlewares() {
         this._app.use(cookieParser());
         this._app.use(bodyParser.text())
         this._app.use(bodyParser.urlencoded({ extended: true }))
         this._app.use(bodyParser.json())
         this._app.use(multer().any())
+    }
+
+    private connectToDB() {
+        mongoose.connect( constants.mongoDB, {
+                useNewUrlParser: true,
+                useFindAndModify: false,
+                useUnifiedTopology: true,
+                useCreateIndex: true
+            })
+            .then(() => console.log('State of connection: connected 1'))
+            .catch((error :string) => console.error(error))
     }
 }
 

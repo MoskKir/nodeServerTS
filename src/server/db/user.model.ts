@@ -1,10 +1,29 @@
-import IUser from './user.interface';
+import { createSchema, Type, typedModel, } from 'ts-mongoose';
+import bcrypt from 'bcryptjs';
 
-export default class User implements IUser {
-    public name :string;
-    public age :number;
-    constructor( user :IUser ) {
-        this.name = user.name;
-        this.age = user.age;
-    }
-}
+const UserSchema = createSchema({
+    name: Type.string({
+        unique:true,
+        required: true,
+        trim: true
+    }),
+    age: Type.number({
+        required: true,
+    }),
+    password: Type.string({
+        required: false,
+        minlength: 1,
+        trim: true,
+    }),
+})
+
+UserSchema.pre<any>('save', async function(next :any) {
+    const user = this;
+    if(user.isModified('password')) user.password = await bcrypt.hash(user.password, 8);
+    next();
+});
+
+
+const User = typedModel('User', UserSchema);
+
+export default User;
