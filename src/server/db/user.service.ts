@@ -21,5 +21,18 @@ export default class UserService {
         const id = req.body._id;
         return await User.findByIdAndUpdate(id, req.body);
     }
+
+    public static async auth(req :Request) {
+        const name = req.body.name;
+        const password = req.body.password;
+
+        if (!name || !password) throw new Error('please log in');
+
+        const user = await User.findByCredentials(name, password);
+        
+        const token = await user.generateAuthToken();
+        
+        return {user, token}
+    }
 }
 

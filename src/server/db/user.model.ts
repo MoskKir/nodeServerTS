@@ -1,5 +1,6 @@
 import { createSchema, Type, typedModel, } from 'ts-mongoose';
 import bcrypt from 'bcryptjs';
+import jwt from 'jwt-simple';
 
 const UserSchema = createSchema({
     name: Type.string({
@@ -11,11 +12,11 @@ const UserSchema = createSchema({
         required: true,
     }),
     password: Type.string({
-        required: false,
+        required: true,
         minlength: 1,
         trim: true,
     }),
-})
+});
 
 UserSchema.pre<any>('save', async function(next :any) {
     const user = this;
@@ -23,6 +24,23 @@ UserSchema.pre<any>('save', async function(next :any) {
     next();
 });
 
+UserSchema.methods.generateAuthToken = async function() {
+    // const user = this;
+    const token = jwt.encode({name: this.name }, 'mysecretword');
+    return token;
+};
+
+UserSchema.statics.findByCredentials = async function(login :string, password :string) {
+    const user = await User.findOne({name: login});
+
+    if(!user) throw new Error('Unable user');
+    
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) throw new Error('Unable to login');
+    
+    return user;
+};
 
 const User = typedModel('User', UserSchema);
 

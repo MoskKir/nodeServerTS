@@ -42,8 +42,17 @@ export default class UserController {
         }
     }
 
+    private static async auth(req :Request, res :Response, next :NextFunction) {
+        try {
+            await UserService.auth(req);
+            next();
+        } catch (error) {
+            res.status(400).send({error: error.message});
+        }
+    }
+
     public static routes(path :string = '/') {
-        this._router.get(`${path}`, this.getAllUsers);
+        this._router.get(`${path}`, this.auth, this.getAllUsers);
         this._router.post(`${path}`, this.addNewUser);
         this._router.delete(`${path}`, this.deleteUser);
         this._router.put(`${path}`, this.updateUser);
