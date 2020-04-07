@@ -26,7 +26,7 @@ export default class UserController {
 
     private static async deleteUser(req :Request, res :Response) {
         try {
-            if (req.body) UserService.deleteUser(req);
+            if (req.body) UserService.deleteUser(req.body._id);
             res.redirect('/api/users/');
         } catch (error) {
             res.status(400).send({error: error.message});
@@ -35,7 +35,7 @@ export default class UserController {
 
     private static async updateUser(req :Request, res :Response) {
         try {
-            if (req.body) UserService.updateUser(req);
+            if (req.body) UserService.updateUser(req.body._id, req.body);
             res.redirect('/api/users/');
         } catch (error) {
             res.status(400).send({error: error.message});
@@ -44,7 +44,9 @@ export default class UserController {
 
     private static async auth(req :Request, res :Response, next :NextFunction) {
         try {
-            await UserService.auth(req);
+            const name = req.body.name;
+            const password = req.body.password;
+            await UserService.auth(name, password);
             next();
         } catch (error) {
             res.status(400).send({error: error.message});
