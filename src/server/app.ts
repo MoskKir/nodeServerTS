@@ -52,15 +52,15 @@ class App {
 
     private errorHandler(err :Error, req :Request, res :Response, next :NextFunction) {
         res.status(500);
-        res.send({error: err})
+        res.send({error: err});
     }
 
     private setMiddlewares() {
         this._app.use(cookieParser());
-        this._app.use(bodyParser.text())
+        this._app.use(bodyParser.text());
         // this._app.use(bodyParser.urlencoded({ extended: true }))
-        this._app.use(bodyParser.json())
-        this._app.use(multer().any())
+        this._app.use(bodyParser.json());
+        this._app.use(multer().any());
     }
 
     private connectToDB() {

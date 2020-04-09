@@ -25,8 +25,7 @@ UserSchema.pre<any>('save', async function(next :any) {
 });
 
 UserSchema.methods.generateAuthToken = async function() {
-    // const user = this;
-    const token = jwt.encode({name: this.name }, 'mysecretword');
+    const token = jwt.encode({_id: this._id }, 'mysecretword');
     return token;
 };
 

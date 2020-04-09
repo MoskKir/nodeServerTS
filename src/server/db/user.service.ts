@@ -28,11 +28,10 @@ export default class UserService {
 
     public static async auth(name :string, password :string) {
         const user = await User.findByCredentials(name, password);
-        
+        if (!user) throw new Error('User not found'); 
         const token = await user.generateAuthToken();
-        console.log('TOKEN ',token)
         
-        return {user, token}
+        return token;
     }
 }
 

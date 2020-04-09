@@ -1,6 +1,7 @@
 import { Router as ExpressRouter, Request, Response, NextFunction } from 'express';
 import User from '../db/user.model';
 import UserService from '../db/user.service';
+import AccessSecurity from '../middleware/authentication';
 
 
 export default class UserController {
@@ -42,19 +43,21 @@ export default class UserController {
         }
     }
 
-    private static async auth(req :Request, res :Response, next :NextFunction) {
+    private static async authorization(req :Request, res :Response, next :NextFunction) {
         try {
             const name = req.body.name;
             const password = req.body.password;
-            await UserService.auth(name, password);
-            next();
+            const token = await UserService.auth(name, password);
+            res.send(token)
+            // next();
         } catch (error) {
             res.status(400).send({error: error.message});
         }
     }
 
     public static routes(path :string = '/') {
-        this._router.get(`${path}`, this.auth, this.getAllUsers);
+        this._router.post(`${path}login`, this.authorization, this.getAllUsers); // это должен быть пост на урл логин
+        this._router.get(`${path}`, AccessSecurity.authenticationUser, this.getAllUsers); // это должен быть пост на урл логин
         this._router.post(`${path}`, this.addNewUser);
         this._router.delete(`${path}`, this.deleteUser);
         this._router.put(`${path}`, this.updateUser);
