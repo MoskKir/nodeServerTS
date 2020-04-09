@@ -16,10 +16,34 @@ export default class UserController {
         }
     }
 
+    private static async getUser(req :Request, res :Response, next :NextFunction) {
+        try {
+            const { id } = req.params
+            const user = await UserService.getUser(id);
+
+            if(user) await user.populate('pets').execPopulate();
+
+            res.send(user);  
+        } catch (error) {
+            res.status(400).send({error: error.message});
+        }
+    }
+
     private static addNewUser(req :Request, res :Response, next :NextFunction) {
         try {
             if (req.body) UserService.addUser(req.body);
             res.redirect('/api/users/');            
+        } catch (error) {
+            res.status(400).send({error: error.message});
+        }
+    }
+
+    private static addNewUserPet(req :Request, res :Response, next :NextFunction) {
+        let result 
+        try {
+            if (req.body) result = UserService.addUserPet(req.body);
+            // res.redirect('/api/users/');
+            res.send(result);
         } catch (error) {
             res.status(400).send({error: error.message});
         }
@@ -56,11 +80,13 @@ export default class UserController {
     }
 
     public static routes(path :string = '/') {
-        this._router.post(`${path}login`, this.authorization, this.getAllUsers); // это должен быть пост на урл логин
-        this._router.get(`${path}`, AccessSecurity.authenticationUser, this.getAllUsers); // это должен быть пост на урл логин
+        this._router.post(`${path}login`, this.authorization, this.getAllUsers);
+        this._router.get(`${path}`, AccessSecurity.authenticationUser, this.getAllUsers);
         this._router.post(`${path}`, this.addNewUser);
         this._router.delete(`${path}`, this.deleteUser);
         this._router.put(`${path}`, this.updateUser);
+        this._router.post(`${path}addPet`, this.addNewUserPet);
+        this._router.get(`${path}:id`, this.getUser); // this endpoin send user with him pets
         
         return this._router;
     }

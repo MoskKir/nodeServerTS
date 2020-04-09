@@ -1,6 +1,7 @@
 import { createSchema, Type, typedModel, } from 'ts-mongoose';
 import bcrypt from 'bcryptjs';
 import jwt from 'jwt-simple';
+import { Schema } from 'mongoose';
 
 const UserSchema = createSchema({
     name: Type.string({
@@ -16,6 +17,10 @@ const UserSchema = createSchema({
         minlength: 1,
         trim: true,
     }),
+    pets: Type.array().of({
+        type: Schema.Types.ObjectId,
+        ref: 'Peets'
+    })
 });
 
 UserSchema.pre<any>('save', async function(next :any) {
