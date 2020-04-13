@@ -1,7 +1,8 @@
 import { Router as ExpressRouter, Request, Response, NextFunction } from 'express';
-import User from '../db/user.model';
 import UserService from '../db/user.service';
 import AccessSecurity from '../middleware/authentication';
+import Validation from '../middleware/validation';
+import loginSchema from '../validators/login.validator';
 
 
 export default class UserController {
@@ -80,7 +81,7 @@ export default class UserController {
     }
 
     public static routes(path :string = '/') {
-        this._router.post(`${path}login`, this.authorization, this.getAllUsers);
+        this._router.post(`${path}login`, Validation.login(loginSchema), this.authorization, this.getAllUsers);
         this._router.get(`${path}`, AccessSecurity.authenticationUser, this.getAllUsers);
         this._router.post(`${path}`, this.addNewUser);
         this._router.delete(`${path}`, this.deleteUser);
