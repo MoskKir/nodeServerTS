@@ -60,5 +60,9 @@ export default class UserService {
         
         return token;
     }
+
+    public static async uploadAvatar(filename :string, id :string) {        
+        return await User.findByIdAndUpdate(id, { filename }, { new: true });;
+    }
 }
 

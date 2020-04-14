@@ -3,10 +3,12 @@ import UserService from '../db/user.service';
 import AccessSecurity from '../middleware/authentication';
 import Validation from '../middleware/validation';
 import loginSchema from '../validators/login.validator';
+import multer from 'multer';
 
 
 export default class UserController {
     private static _router :ExpressRouter = ExpressRouter();
+    private static _upload = multer({dest: 'uploads'});
 
     private static async getAllUsers(req :Request, res :Response, next :NextFunction) {
         try {
@@ -80,6 +82,18 @@ export default class UserController {
         }
     }
 
+    private static async uploadAvatar(req :Request, res :Response, next :NextFunction) {
+        try {
+            const filename = req.file.filename;
+            const id = req.body._id;
+            
+            const avatar = await UserService.uploadAvatar(filename, id);
+            res.send(avatar);
+        } catch (error) {
+            res.status(400).send({ error: error.message });
+        }
+    }
+
     public static routes(path :string = '/') {
         this._router.post(`${path}login`, Validation.login(loginSchema), this.authorization, this.getAllUsers);
         this._router.get(`${path}`, AccessSecurity.authenticationUser, this.getAllUsers);
@@ -88,7 +102,8 @@ export default class UserController {
         this._router.put(`${path}`, this.updateUser);
         this._router.post(`${path}addPet`, this.addNewUserPet);
         this._router.get(`${path}:id`, this.getUser); // this endpoin send user with him pets
-        
+        this._router.post(`${path}:id`, this._upload.any(), this.uploadAvatar);
+
         return this._router;
     }
 }
